@@ -9,18 +9,17 @@ import SwiftUI
 
 struct ListView: View {
     
-    @State var items:[ItemModel] = [
-        ItemModel(title:"This is the 1st title!",isCompleted: false),
-        ItemModel(title:"This is the second!",isCompleted: true),
-        ItemModel(title:"Third!",isCompleted: false)
-    ]
+    @Environment(TodoListViewModel.self) var viewModel:TodoListViewModel
     
     var body: some View {
         List{
-            ForEach(items){ item in
+            ForEach(viewModel.items){ item in
                 ListRowView(item:item)
             }
+            .onDelete(perform: viewModel.deleteItem)
+            .onMove(perform: viewModel.moveItem)
         }
+        
         .listStyle(PlainListStyle())
         
         .navigationTitle("Todo List 📝")
