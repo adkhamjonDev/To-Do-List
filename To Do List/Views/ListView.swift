@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ListView: View {
     
-    @Environment(TodoListViewModel.self) var viewModel:TodoListViewModel
+    var viewModel:TodoListViewModel = TodoListViewModel()
     
     var body: some View {
         List{
