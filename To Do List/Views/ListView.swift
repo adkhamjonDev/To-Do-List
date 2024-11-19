@@ -9,19 +9,31 @@ import SwiftUI
 
 struct ListView: View {
     
-    var viewModel:TodoListViewModel = TodoListViewModel()
+    @Environment(TodoListViewModel.self) var viewModel
     
     var body: some View {
-        List{
-            ForEach(viewModel.items){ item in
-                ListRowView(item:item)
+        ZStack {
+            
+            if viewModel.items.isEmpty {
+                NoItemsView()
+                    .transition(AnyTransition.opacity.animation(.easeIn))
+            } else {
+                List{
+                    ForEach(viewModel.items){ item in
+                        ListRowView(item:item)
+                            .onTapGesture {
+                                withAnimation(.linear){
+                                    viewModel.updateItem(item: item)
+                                }
+                            }
+                    }
+                    .onDelete(perform: viewModel.deleteItem)
+                    .onMove(perform: viewModel.moveItem)
+                }
+                
+                .listStyle(PlainListStyle())
             }
-            .onDelete(perform: viewModel.deleteItem)
-            .onMove(perform: viewModel.moveItem)
         }
-        
-        .listStyle(PlainListStyle())
-        
         .navigationTitle("Todo List 📝")
         .toolbar{
             ToolbarItem(
@@ -44,6 +56,7 @@ struct ListView: View {
     NavigationStack{
         ListView()
     }
+    .environment(TodoListViewModel())
 }
 
 
